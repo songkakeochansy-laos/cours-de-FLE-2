@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours de FLE — Espace d'apprentissage A2</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chargement de la police Inter & Playfair Display pour une touche éditoriale élégante -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Chargement des icônes Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Configuration personnalisée des couleurs -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        anthracite: '#252525',
+                        grisMoyen: '#777777',
+                        grisClair: '#D9D9D9',
+                        blancPur: '#FFFFFF',
+                        accentOr: '#D6A66C',
+                        accentOrHover: '#c49256',
+                        fondSubtil: '#F9F9F8'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Styles personnalisés pour les animations et cartes retournables */
+        body {
+            background-color: #FFFFFF;
+            color: #252525;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        /* Barre de défilement discrète pour le chat */
+        .chat-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #D9D9D9;
+            border-radius: 10px;
+        }
+        /* Animation points de réflexion IA */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accentOr selection:text-white flex flex-col min-h-screen">
+
+    <!-- ================= BARRE DE NAVIGATION ================= -->
+    <header class="sticky top-0 z-40 bg-blancPur/95 backdrop-blur-md border-b border-grisClair">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo / Titre du site -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-anthracite text-accentOr flex items-center justify-center font-serif text-xl font-bold shadow-sm group-hover:bg-accentOr group-hover:text-anthracite transition-colors">
+                        FLE
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl tracking-tight text-anthracite block leading-none">Cours de FLE</span>
+                        <span class="text-xs text-grisMoyen font-medium tracking-wider uppercase">Niveau A2 • 15-17 ans</span>
+                    </div>
+                </a>
+
+                <!-- Menu Desktop (4 rubriques) -->
+                <nav class="hidden md:flex items-center space-x-2">
+                    <button onclick="switchSection('vocabulaires')" id="nav-vocabulaires" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-anthracite text-blancPur">
+                        1. Vocabulaires
+                    </button>
+                    <button onclick="switchSection('grammaire')" id="nav-grammaire" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-medium text-grisMoyen hover:text-anthracite hover:bg-grisClair/30 transition-all">
+                        2. Point grammatical
+                    </button>
+                    <button onclick="switchSection('pratiquer')" id="nav-pratiquer" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-medium text-grisMoyen hover:text-anthracite hover:bg-grisClair/30 transition-all">
+                        3. Pratiquer
+                    </button>
+                    <button onclick="switchSection('quiz')" id="nav-quiz" class="nav-btn px-4 py-2.5 rounded-xl text-sm font-medium text-grisMoyen hover:text-anthracite hover:bg-grisClair/30 transition-all">
+                        4. Quiz
+                    </button>
+                </nav>
+
+                <!-- Bouton ouvrir Assistant IA (Header) -->
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleChat(true)" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accentOr/20 border border-accentOr text-anthracite hover:bg-accentOr hover:text-white transition-all text-sm font-semibold shadow-sm">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-accentOr group-hover:text-white"></i>
+                        <span class="hidden sm:inline">Tuteur IA</span>
+                    </button>
+                    <!-- Bouton Menu Mobile -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl border border-grisClair text-anthracite hover:bg-grisClair/30">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Mobile déroulant -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-grisClair bg-blancPur px-4 py-3 space-y-1">
+            <button onclick="switchSection('vocabulaires'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-anthracite hover:bg-grisClair/30">
+                1. Vocabulaires
+            </button>
+            <button onclick="switchSection('grammaire'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-anthracite hover:bg-grisClair/30">
+                2. Point grammatical
+            </button>
+            <button onclick="switchSection('pratiquer'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-anthracite hover:bg-grisClair/30">
+                3. Pratiquer
+            </button>
+            <button onclick="switchSection('quiz'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-anthracite hover:bg-grisClair/30">
+                4. Quiz
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= EN-TÊTE PÉDAGOGIQUE (HERO) ================= -->
+    <section class="bg-fondSubtil border-b border-grisClair py-10 sm:py-14">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blancPur border border-grisClair text-xs font-semibold text-grisMoyen mb-4">
+                        <span class="w-2 h-2 rounded-full bg-accentOr"></span>
+                        Bienvenue dans ton espace d'apprentissage
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-anthracite tracking-tight mb-3">
+                        Apprendre le français <span class="font-serif italic text-accentOr">plus facilement</span>.
+                    </h1>
+                    <p class="text-grisMoyen text-base sm:text-lg leading-relaxed">
+                        Explore le vocabulaire du quotidien, comprends les règles essentielles du niveau A2, entraîne-toi à ton rythme et demande des indices à ton tuteur IA dès que tu bloques !
+                    </p>
+                </div>
+
+                <!-- Carte rapide progression / aide -->
+                <div class="bg-blancPur p-5 rounded-2xl border border-grisClair shadow-sm flex flex-col justify-between min-w-[260px]">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-grisMoyen">Besoin d'un coup de main ?</span>
+                        <i data-lucide="help-circle" class="w-4 h-4 text-accentOr"></i>
+                    </div>
+                    <p class="text-sm text-anthracite mb-4">
+                        Je ne te donne jamais la réponse directement, mais je t'aide à trouver par toi-même !
+                    </p>
+                    <button onclick="toggleChat(true)" class="w-full py-2.5 px-4 rounded-xl bg-anthracite text-blancPur hover:bg-accentOr hover:text-anthracite font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                        Discuter avec l'Assistant IA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CONTENU PRINCIPAL (LES 4 RUBRIQUES) ================= -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- ================================================================
+             RUBRIQUE 1 : VOCABULAIRES
+             ================================================================ -->
+        <section id="section-vocabulaires" class="content-section space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-grisClair pb-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-accentOr">Rubrique 01</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-anthracite mt-1">Vocabulaires thématiques</h2>
+                    <p class="text-grisMoyen text-sm mt-1">Clique sur une carte pour découvrir sa définition simple et un exemple en contexte.</p>
+                </div>
+
+                <!-- Filtres de thèmes -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterVocab('loisirs')" class="vocab-tab px-4 py-2 rounded-xl text-xs font-semibold bg-anthracite text-blancPur transition-all" data-theme="loisirs">
+                        Loisirs & Sorties
+                    </button>
+                    <button onclick="filterVocab('voyage')" class="vocab-tab px-4 py-2 rounded-xl text-xs font-semibold bg-fondSubtil border border-grisClair text-grisMoyen hover:text-anthracite transition-all" data-theme="voyage">
+                        Voyages & Transports
+                    </button>
+                    <button onclick="filterVocab('quotidien')" class="vocab-tab px-4 py-2 rounded-xl text-xs font-semibold bg-fondSubtil border border-grisClair text-grisMoyen hover:text-anthracite transition-all" data-theme="quotidien">
+                        Vie au lycée & Amis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grille de cartes de vocabulaire -->
+            <div id="vocab-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Généré dynamiquement par JavaScript -->
+            </div>
+
+            <!-- Bouton demander plus de mots à l'IA -->
+            <div class="bg-fondSubtil border border-grisClair rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-accentOr/20 flex items-center justify-center text-accentOr shrink-0">
+                        <i data-lucide="book-open" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-anthracite">Tu veux d'autres mots sur un thème précis ?</h3>
+                        <p class="text-sm text-grisMoyen">Demande à ton assistant IA de te créer une mini-liste sur le sport, la musique ou les réseaux sociaux.</p>
+                    </div>
+                </div>
+                <button onclick="askAIQuick('Peux-tu me donner 5 mots de vocabulaire niveau A2 sur le thème des réseaux sociaux et des loisirs des jeunes, avec des exemples simples ?')" class="px-5 py-2.5 rounded-xl bg-blancPur border border-grisClair hover:border-accentOr text-anthracite font-medium text-sm transition-all shrink-0">
+                    Demander à l'IA →
+                </button>
+            </div>
+        </section>
+
+        <!-- ================================================================
+             RUBRIQUE 2 : POINT GRAMMATICAL
+             ================================================================ -->
+        <section id="section-grammaire" class="content-section hidden space-y-8">
+            <div class="border-b border-grisClair pb-6">
+                <span class="text-xs font-bold uppercase tracking-widest text-accentOr">Rubrique 02</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-anthracite mt-1">Point grammatical (Niveau A2)</h2>
+                <p class="text-grisMoyen text-sm mt-1">Des fiches claires et visuelles pour comprendre les temps du passé et les pronoms sans stress.</p>
+            </div>
+
+            <!-- Sélecteur de leçon de grammaire -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="showGrammarLesson('passe-compose')" id="btn-gram-passe" class="gram-selector p-5 rounded-2xl border-2 border-accentOr bg-blancPur text-left transition-all shadow-sm">
+                    <span class="text-xs font-bold text-accentOr uppercase">Fiche 1</span>
+                    <h3 class="font-bold text-lg text-anthracite mt-1">Le Passé Composé</h3>
+                    <p class="text-xs text-grisMoyen mt-1">Raconter un événement passé ou son week-end.</p>
+                </button>
+
+                <button onclick="showGrammarLesson('imparfait')" id="btn-gram-imparfait" class="gram-selector p-5 rounded-2xl border border-grisClair bg-fondSubtil text-left hover:border-anthracite transition-all">
+                    <span class="text-xs font-bold text-grisMoyen uppercase">Fiche 2</span>
+                    <h3 class="font-bold text-lg text-anthracite mt-1">L'Imparfait (Description)</h3>
+                    <p class="text-xs text-grisMoyen mt-1">Décrire des souvenirs et des habitudes.</p>
+                </button>
+
+                <button onclick="showGrammarLesson('pronoms-cod')" id="btn-gram-pronoms" class="gram-selector p-5 rounded-2xl border border-grisClair bg-fondSubtil text-left hover:border-anthracite transition-all">
+                    <span class="text-xs font-bold text-grisMoyen uppercase">Fiche 3</span>
+                    <h3 class="font-bold text-lg text-anthracite mt-1">Les Pronoms COD (le, la, les)</h3>
+                    <p class="text-xs text-grisMoyen mt-1">Éviter les répétitions dans une phrase.</p>
+                </button>
+            </div>
+
+            <!-- Contenu détaillé de la fiche de grammaire -->
+            <div id="grammar-content-box" class="bg-blancPur border border-grisClair rounded-2xl p-6 sm:p-8 shadow-sm">
+                <!-- Injecté par JavaScript -->
+            </div>
+        </section>
+
+        <!-- ================================================================
+             RUBRIQUE 3 : PRATIQUER
+             ================================================================ -->
+        <section id="section-pratiquer" class="content-section hidden space-y-8">
+            <div class="border-b border-grisClair pb-6">
+                <span class="text-xs font-bold uppercase tracking-widest text-accentOr">Rubrique 03</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-anthracite mt-1">Pratiquer en contexte</h2>
+                <p class="text-grisMoyen text-sm mt-1">Complète les phrases et vérifie tes réponses. Si tu hésites, demande un indice à l'IA !</p>
+            </div>
+
+            <!-- Exercice 1 : Texte à trous (Passé composé) -->
+            <div class="bg-blancPur border border-grisClair rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-accentOr/20 text-anthracite text-xs font-semibold">Exercice 1 • Conjugaison</span>
+                        <h3 class="text-xl font-bold text-anthracite mt-2">Le week-end de Léa et Lucas</h3>
+                    </div>
+                    <button onclick="askAIQuick('Peux-tu me donner un indice pour choisir entre l\'auxiliaire avoir et l\'auxiliaire être au passé composé ? Ne me donne pas la réponse, juste une astuce !')" class="text-xs font-semibold text-accentOr hover:underline flex items-center gap-1 self-start sm:self-auto">
+                        <i data-lucide="lightbulb" class="w-4 h-4"></i> Demander un indice à l'IA
+                    </button>
+                </div>
+
+                <p class="text-sm text-grisMoyen">Choisis la bonne forme au <strong>passé composé</strong> pour compléter le message de Léa :</p>
+
+                <div class="bg-fondSubtil p-5 rounded-xl border border-grisClair/70 leading-loose text-anthracite text-base space-y-3">
+                    <p>
+                        « Salut ! Samedi dernier, je
+                        <select id="ex1-q1" class="mx-1 px-3 py-1 rounded-lg border border-grisClair bg-blancPur font-medium text-anthracite focus:outline-none focus:border-accentOr">
+                            <option value="">-- choisis --</option>
+                            <option value="ai allé">ai allé</option>
+                            <option value="suis allée">suis allée</option>
+                            <option value="suis allé">suis allé</option>
+                        </select>
+                        au cinéma avec Lucas. Nous
+                        <select id="ex1-q2" class="mx-1 px-3 py-1 rounded-lg border border-grisClair bg-blancPur font-medium text-anthracite focus:outline-none focus:border-accentOr">
+                            <option value="">-- choisis --</option>
+                            <option value="avons regardé">avons regardé</option>
+                            <option value="sommes regardés">sommes regardés</option>
+                            <option value="avons regardés">avons regardés</option>
+                        </select>
+                        un film d'action génial. Ensuite, Lucas
+                        <select id="ex1-q3" class="mx-1 px-3 py-1 rounded-lg border border-grisClair bg-blancPur font-medium text-anthracite focus:outline-none focus:border-accentOr">
+                            <option value="">-- choisis --</option>
+                            <option value="a pris">a pris</option>
+                            <option value="a prendu">a prendu</option>
+                            <option value="est pris">est pris</option>
+                        </select>
+                        un chocolat chaud et nous
+                        <select id="ex1-q4" class="mx-1 px-3 py-1 rounded-lg border border-grisClair bg-blancPur font-medium text-anthracite focus:outline-none focus:border-accentOr">
+                            <option value="">-- choisis --</option>
+                            <option value="avons rentrés">avons rentrés</option>
+                            <option value="sommes rentrés">sommes rentrés</option>
+                            <option value="sommes rentré">sommes rentré</option>
+                        </select>
+                        chez nous vers 19h. »
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-4">
+                    <button onclick="checkExercise1()" class="px-6 py-2.5 rounded-xl bg-anthracite text-blancPur hover:bg-accentOr hover:text-anthracite font-medium text-sm transition-colors">
+                        Vérifier mes réponses
+                    </button>
+                    <button onclick="resetExercise1()" class="px-4 py-2.5 rounded-xl border border-grisClair text-grisMoyen hover:text-anthracite text-sm transition-colors">
+                        Recommencer
+                    </button>
+                </div>
+
+                <!-- Zone de feedback immédiat -->
+                <div id="ex1-feedback" class="hidden p-4 rounded-xl text-sm"></div>
+            </div>
+
+            <!-- Exercice 2 : Production écrite guidée avec correction IA -->
+            <div class="bg-blancPur border border-grisClair rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+                <span class="px-3 py-1 rounded-full bg-anthracite text-blancPur text-xs font-semibold">Exercice 2 • Expression écrite</span>
+                <h3 class="text-xl font-bold text-anthracite">À ton tour d'écrire !</h3>
+                <p class="text-sm text-grisMoyen">
+                    Écris 2 ou 3 phrases simples pour raconter ce que tu as fait hier soir ou le week-end dernier. Envoie ton texte à l'Assistant IA pour qu'il t'aide à l'améliorer !
+                </p>
+                <textarea id="student-writing" rows="3" placeholder="Exemple : Hier soir, j'ai mangé une pizza avec mes parents et j'ai écouté de la musique..." class="w-full p-4 rounded-xl border border-grisClair bg-fondSubtil text-anthracite text-sm focus:outline-none focus:border-accentOr"></textarea>
+                <div class="flex justify-end">
+                    <button onclick="submitWritingToAI()" class="px-5 py-2.5 rounded-xl bg-accentOr text-anthracite hover:bg-accentOrHover font-semibold text-sm transition-colors flex items-center gap-2">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        Demander l'avis du Tuteur IA
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================
+             RUBRIQUE 4 : QUIZ
+             ================================================================ -->
+        <section id="section-quiz" class="content-section hidden space-y-8">
+            <div class="border-b border-grisClair pb-6">
+                <span class="text-xs font-bold uppercase tracking-widest text-accentOr">Rubrique 04</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-anthracite mt-1">Quiz bilan — Niveau A2</h2>
+                <p class="text-grisMoyen text-sm mt-1">Teste tes connaissances en vocabulaire, grammaire et communication quotidienne (5 questions).</p>
+            </div>
+
+            <!-- Conteneur interactif du Quiz -->
+            <div id="quiz-container" class="bg-blancPur border border-grisClair rounded-2xl p-6 sm:p-8 shadow-sm max-w-3xl mx-auto">
+                <!-- Barre de progression -->
+                <div class="flex items-center justify-between text-xs font-semibold text-grisMoyen mb-2">
+                    <span id="quiz-progress-text">Question 1 sur 5</span>
+                    <span id="quiz-score-badge" class="text-accentOr">Score : 0</span>
+                </div>
+                <div class="w-full h-2 bg-fondSubtil rounded-full overflow-hidden mb-8 border border-grisClair/50">
+                    <div id="quiz-progress-bar" class="h-full bg-accentOr transition-all duration-300" style="width: 20%;"></div>
+                </div>
+
+                <!-- Question et options -->
+                <div id="quiz-question-area">
+                    <h3 id="quiz-question" class="text-xl font-bold text-anthracite mb-6">Chargement de la question...</h3>
+                    <div id="quiz-options" class="space-y-3">
+                        <!-- Boutons générés par JS -->
+                    </div>
+                </div>
+
+                <!-- Explication pédagogique après réponse -->
+                <div id="quiz-explanation" class="hidden mt-6 p-4 rounded-xl bg-fondSubtil border border-grisClair text-sm">
+                    <p id="quiz-explanation-text" class="text-anthracite"></p>
+                </div>
+
+                <!-- Bouton Suivant -->
+                <div class="mt-6 flex justify-end">
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden px-6 py-2.5 rounded-xl bg-anthracite text-blancPur hover:bg-accentOr hover:text-anthracite font-medium text-sm transition-colors">
+                        Question suivante →
+                    </button>
+                </div>
+
+                <!-- Écran de résultat final -->
+                <div id="quiz-result-area" class="hidden text-center py-6 space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-accentOr/20 text-accentOr flex items-center justify-center mx-auto">
+                        <i data-lucide="award" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-anthracite">Quiz terminé !</h3>
+                    <p id="quiz-final-score" class="text-lg font-medium text-grisMoyen">Tu as obtenu 0 / 5</p>
+                    <p id="quiz-final-message" class="text-sm text-anthracite max-w-md mx-auto"></p>
+                    <div class="flex flex-wrap justify-center gap-3 pt-4">
+                        <button onclick="restartQuiz()" class="px-5 py-2.5 rounded-xl border border-grisClair text-anthracite hover:bg-fondSubtil font-medium text-sm transition-colors">
+                            Rejouer le quiz
+                        </button>
+                        <button onclick="askAIQuick('Je viens de finir le quiz A2 sur le site. Peux-tu me proposer un nouveau mini-quiz de 3 questions pour m\'entraîner encore ?')" class="px-5 py-2.5 rounded-xl bg-anthracite text-blancPur hover:bg-accentOr hover:text-anthracite font-medium text-sm transition-colors">
+                            Demander un quiz bonus à l'IA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= PIED DE PAGE ================= -->
+    <footer class="bg-fondSubtil border-t border-grisClair py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-grisMoyen">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-anthracite">Cours de FLE</span>
+                <span>•</span>
+                <span>Ressource pédagogique numérique (Niveau A2)</span>
+            </div>
+            <div>
+                Conçu pour encourager l'autonomie des apprenants (15-17 ans)
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= AGENT IA PÉDAGOGIQUE (FENÊTRE FLOTTANTE) ================= -->
+    <!-- Bouton flottant en bas à droite -->
+    <button onclick="toggleChat()" id="floating-chat-btn" aria-label="Ouvrir l'assistant IA" class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-anthracite text-accentOr shadow-xl hover:scale-105 hover:bg-accentOr hover:text-anthracite transition-all flex items-center justify-center border border-accentOr/40">
+        <i data-lucide="bot" class="w-7 h-7"></i>
+    </button>
+
+    <!-- Panneau de conversation IA -->
+    <div id="ai-chat-window" class="hidden fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[400px] h-[520px] max-h-[75vh] bg-blancPur border border-grisClair rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <!-- En-tête du Chatbot -->
+        <div class="bg-anthracite text-blancPur px-5 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-accentOr text-anthracite flex items-center justify-center font-bold">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm leading-tight">Tuteur FLE (Niveau A2)</h3>
+                    <span class="text-[11px] text-grisClair flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-green-400"></span> En ligne • Aide & Indices
+                    </span>
+                </div>
+            </div>
+            <button onclick="toggleChat(false)" class="text-grisClair hover:text-blancPur p-1 rounded-lg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Zone des messages -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto chat-scroll space-y-4 bg-fondSubtil">
+            <!-- Message d'accueil initial -->
+            <div class="flex items-start gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-anthracite text-accentOr flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                    IA
+                </div>
+                <div class="bg-blancPur border border-grisClair rounded-2xl rounded-tl-none px-4 py-3 text-sm text-anthracite shadow-sm">
+                    Salut ! 👋 Je suis ton assistant de français (niveau A2). Tu as une question sur le vocabulaire, la grammaire, ou tu veux un petit exercice ? Pose-moi ta question !
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions rapides -->
+        <div class="px-3 py-2 bg-blancPur border-t border-grisClair/60 flex gap-1.5 overflow-x-auto no-scrollbar">
+            <button onclick="askAIQuick('Explique-moi simplement quand utiliser le passé composé.')" class="whitespace-nowrap px-2.5 py-1 rounded-lg bg-fondSubtil border border-grisClair text-[11px] font-medium text-anthracite hover:border-accentOr transition-colors">
+                Passé composé ?
+            </button>
+            <button onclick="askAIQuick('Donne-moi un mini-exercice à trous niveau A2.')" class="whitespace-nowrap px-2.5 py-1 rounded-lg bg-fondSubtil border border-grisClair text-[11px] font-medium text-anthracite hover:border-accentOr transition-colors">
+                Mini-exercice
+            </button>
+            <button onclick="askAIQuick('Donne-moi un indice pour le quiz sans me dire la réponse.')" class="whitespace-nowrap px-2.5 py-1 rounded-lg bg-fondSubtil border border-grisClair text-[11px] font-medium text-anthracite hover:border-accentOr transition-colors">
+                Un indice !
+            </button>
+        </div>
+
+        <!-- Formulaire d'envoi -->
+        <form onsubmit="handleChatSubmit(event)" class="p-3 bg-blancPur border-t border-grisClair flex items-center gap-2">
+            <input type="text" id="chat-input" placeholder="Écris ton message en français..." autocomplete="off" class="flex-grow px-3.5 py-2.5 rounded-xl bg-fondSubtil border border-grisClair text-sm text-anthracite focus:outline-none focus:border-accentOr">
+            <button type="submit" id="chat-send-btn" class="p-2.5 rounded-xl bg-anthracite text-accentOr hover:bg-accentOr hover:text-anthracite transition-colors shrink-0">
+                <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- ================= SCRIPTS INTERACTIFS & LOGIQUE IA ================= -->
+    <script>
+        // Initialisation des icônes Lucide
+        lucide.createIcons();
+
+        // ----------------------------------------------------------------
+        // 1. NAVIGATION ENTRE LES 4 RUBRIQUES
+        // ----------------------------------------------------------------
+        function switchSection(sectionId) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.add('hidden');
+            });
+            // Afficher la section demandée
+            const target = document.getElementById('section-' + sectionId);
+            if (target) target.classList.remove('hidden');
+
+            // Mettre à jour le style des boutons du menu
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-anthracite', 'text-blancPur');
+                btn.classList.add('text-grisMoyen');
+            });
+            const activeBtn = document.getElementById('nav-' + sectionId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-grisMoyen');
+                activeBtn.classList.add('bg-anthracite', 'text-blancPur');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // ----------------------------------------------------------------
+        // 2. DONNÉES ET CARTES DE VOCABULAIRE (RUBRIQUE 1)
+        // ----------------------------------------------------------------
+        const vocabularyData = {
+            loisirs: [
+                { word: "Se détendre", type: "Verbe", def: "Se reposer et faire une activité calme après les cours.", ex: "Le week-end, j'aime me détendre en écoutant de la musique." },
+                { word: "Un spectacle", type: "Nom masculin", def: "Un concert, une pièce de théâtre ou un show devant un public.", ex: "Nous avons vu un spectacle de danse génial samedi." },
+                { word: "Partager", type: "Verbe", def: "Donner une partie à quelqu'un ou publier sur Internet.", ex: "Elle partage souvent ses photos de vacances avec ses amis." },
+                { word: "Passionnant", type: "Adjectif", def: "Très intéressant, captivant.", ex: "Ce roman d'aventure est vraiment passionnant !" },
+                { word: "Rendez-vous", type: "Nom masculin", def: "Un moment précis décidé pour retrouver quelqu'un.", ex: "On a rendez-vous devant le cinéma à 15 heures." },
+                { word: "S'entraîner", type: "Verbe", def: "Pratiquer régulièrement un sport ou une activité pour progresser.", ex: "Il s'entraîne au basket trois fois par semaine." }
+            ],
+            voyage: [
+                { word: "Une correspondance", type: "Nom féminin", def: "Changer de train, de bus ou d'avion pendant un trajet.", ex: "Nous avons une correspondance de 20 minutes à Lyon." },
+                { word: "Réserver", type: "Verbe", def: "Prendre un billet ou une chambre à l'avance.", ex: "Il faut réserver les billets de train sur Internet." },
+                { word: "Un bagage à main", type: "Nom masculin", def: "Un petit sac qu'on garde avec soi dans l'avion ou le train.", ex: "Mon sac à dos est mon bagage à main." },
+                { word: "Le quai", type: "Nom masculin", def: "L'endroit dans la gare où on attend le train.", ex: "Le train pour Paris part du quai numéro 4." },
+                { word: "Découvrir", type: "Verbe", def: "Voir ou connaître un lieu nouveau pour la première fois.", ex: "J'adore découvrir de nouvelles villes et goûter des plats locaux." },
+                { word: "À l'heure", type: "Expression", def: "Arriver exactement au moment prévu (ni en avance, ni en retard).", ex: "Heureusement, notre bus est arrivé à l'heure." }
+            ],
+            quotidien: [
+                { word: "Un emploi du temps", type: "Nom masculin", def: "Le tableau qui indique les heures et les matières des cours.", ex: "Cette année, j'ai un bon emploi du temps le vendredi." },
+                { word: "Réviser", type: "Verbe", def: "Relire et apprendre ses leçons avant un contrôle.", ex: "Je dois réviser mon vocabulaire de français ce soir." },
+                { word: "S'entendre bien avec", type: "Expression", def: "Avoir une bonne relation amicale avec quelqu'un.", ex: "Je m'entends très bien avec mon voisin de classe." },
+                { word: "Un camarade", type: "Nom", def: "Un élève qui est dans la même classe ou la même école.", ex: "Mes camarades de classe sont très sympas." },
+                { word: "Prêter", type: "Verbe", def: "Donner un objet à quelqu'un pour un moment.", ex: "Tu peux me prêter ton stylo bleu, s'il te plaît ?" },
+                { word: "Réussir", type: "Verbe", def: "Avoir un bon résultat à un examen ou un projet.", ex: "Si tu travailles régulièrement, tu vas réussir !" }
+            ]
+        };
+
+        function filterVocab(theme) {
+            // Mise à jour visuelle des onglets
+            document.querySelectorAll('.vocab-tab').forEach(tab => {
+                if (tab.dataset.theme === theme) {
+                    tab.classList.remove('bg-fondSubtil', 'text-grisMoyen', 'border', 'border-grisClair');
+                    tab.classList.add('bg-anthracite', 'text-blancPur');
+                } else {
+                    tab.classList.add('bg-fondSubtil', 'text-grisMoyen', 'border', 'border-grisClair');
+                    tab.classList.remove('bg-anthracite', 'text-blancPur');
+                }
+            });
+
+            // Génération des cartes
+            const grid = document.getElementById('vocab-grid');
+            grid.innerHTML = '';
+            const items = vocabularyData[theme] || [];
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "group h-56 perspective-1000 cursor-pointer";
+                card.onclick = function() {
+                    this.querySelector('.card-inner').classList.toggle('rotate-y-180');
+                };
+
+                card.innerHTML = `
+                    <div class="card-inner relative w-full h-full transition-transform duration-500 transform-style-3d">
+                        <!-- Face avant -->
+                        <div class="absolute inset-0 backface-hidden bg-blancPur border border-grisClair group-hover:border-accentOr rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-fondSubtil text-grisMoyen">${item.type}</span>
+                                <i data-lucide="rotate-cw" class="w-4 h-4 text-accentOr"></i>
+                            </div>
+                            <div class="text-center my-auto">
+                                <h3 class="text-2xl font-bold text-anthracite">${item.word}</h3>
+                            </div>
+                            <p class="text-center text-xs text-grisMoyen">Clique pour voir la définition</p>
+                        </div>
+
+                        <!-- Face arrière -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 bg-anthracite text-blancPur rounded-2xl p-6 flex flex-col justify-between shadow-md">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-accentOr">Définition</span>
+                                <p class="text-sm mt-1 leading-relaxed">${item.def}</p>
+                            </div>
+                            <div class="pt-3 border-t border-grisMoyen/30">
+                                <span class="text-[11px] uppercase tracking-wider text-grisClair block">Exemple :</span>
+                                <p class="text-xs italic text-accentOr mt-0.5">« ${item.ex} »</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // Charger le thème initial
+        filterVocab('loisirs');
+
+        // ----------------------------------------------------------------
+        // 3. FICHES DE GRAMMAIRE (RUBRIQUE 2)
+        // ----------------------------------------------------------------
+        const grammarLessons = {
+            'passe-compose': {
+                title: "Le Passé Composé",
+                usage: "On utilise le passé composé pour raconter une action terminée et précise dans le passé (hier, samedi dernier, à 10h...).",
+                formula: "Sujet + Auxiliaire (AVOIR ou ÊTRE au présent) + Participe Passé",
+                details: [
+                    "<strong>Avec AVOIR (la majorité des verbes) :</strong> J'ai mangé, tu as fini, il a pris. <em>Le participe passé ne s'accorde pas avec le sujet.</em>",
+                    "<strong>Avec ÊTRE (verbes de mouvement + verbes pronominaux) :</strong> aller, venir, partir, arriver, entrer, sortir, rester, tomber, naître, mourir... Exemple : <em>Elle est allée</em> (on accorde avec le sujet !)."
+                ],
+                example: "Hier, nous <strong>avons regardé</strong> un film et après, Marie <strong>est rentrée</strong> chez elle.",
+                aiPrompt: "Peux-tu me donner un petit exercice de 2 phrases sur le passé composé avec être et avoir ?"
+            },
+            'imparfait': {
+                title: "L'Imparfait (Décrire au passé)",
+                usage: "On utilise l'imparfait pour décrire une situation, un décor, une émotion ou une habitude dans le passé.",
+                formula: "Radical de « nous » au présent + terminaisons (-ais, -ais, -ait, -ions, -iez, -aient)",
+                details: [
+                    "<strong>Exemple avec FAIRE :</strong> nous fais-ons → je fais<strong>ais</strong>, tu fais<strong>ais</strong>, il fais<strong>ait</strong>.",
+                    "<strong>Une seule exception :</strong> le verbe <strong>ÊTRE</strong> → j'étais, tu étais, il était, nous étions, vous étiez, ils étaient."
+                ],
+                example: "Quand j'<strong>étais</strong> petit, j'<strong>aimais</strong> beaucoup les bandes dessinées.",
+                aiPrompt: "Peux-tu m'expliquer simplement la différence entre le passé composé et l'imparfait avec un exemple ?"
+            },
+            'pronoms-cod': {
+                title: "Les Pronoms COD (le, la, l', les)",
+                usage: "Ils remplacent un nom (chose ou personne) placé directement après le verbe (sans préposition) pour éviter de le répéter.",
+                formula: "Sujet + Pronom (le / la / l' / les) + Verbe",
+                details: [
+                    "<strong>le / l'</strong> remplace un nom masculin singulier : Tu regardes <em>ce film</em> ? → Oui, je <strong>le</strong> regarde.",
+                    "<strong>la / l'</strong> remplace un nom féminin singulier : Tu écoutes <em>cette chanson</em> ? → Oui, je <strong>l'</strong>écoute.",
+                    "<strong>les</strong> remplace un nom pluriel : Tu invites <em>tes amis</em> ? → Oui, je <strong>les</strong> invite."
+                ],
+                example: "Ce livre est super ! Je <strong>le</strong> lis tous les soirs avant de dormir.",
+                aiPrompt: "Donne-moi une phrase simple avec un nom et demande-moi de le remplacer par le, la ou les."
+            }
+        };
+
+        function showGrammarLesson(key) {
+            const lesson = grammarLessons[key];
+            if (!lesson) return;
+
+            // Mettre à jour les boutons de sélection
+            document.querySelectorAll('.gram-selector').forEach(btn => {
+                btn.classList.remove('border-2', 'border-accentOr', 'bg-blancPur', 'shadow-sm');
+                btn.classList.add('border', 'border-grisClair', 'bg-fondSubtil');
+            });
+            const activeId = key === 'passe-compose' ? 'btn-gram-passe' : (key === 'imparfait' ? 'btn-gram-imparfait' : 'btn-gram-pronoms');
+            const activeEl = document.getElementById(activeId);
+            activeEl.classList.remove('border', 'border-grisClair', 'bg-fondSubtil');
+            activeEl.classList.add('border-2', 'border-accentOr', 'bg-blancPur', 'shadow-sm');
+
+            const box = document.getElementById('grammar-content-box');
+            box.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-bold text-anthracite">${lesson.title}</h3>
+                        <p class="text-grisMoyen mt-2 leading-relaxed">${lesson.usage}</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-anthracite text-blancPur font-medium text-sm sm:text-base flex items-center gap-3">
+                        <span class="px-2.5 py-1 rounded bg-accentOr text-anthracite text-xs font-bold uppercase shrink-0">Formule</span>
+                        <span>${lesson.formula}</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="font-semibold text-anthracite text-sm uppercase tracking-wider">À retenir :</h4>
+                        <ul class="space-y-2 text-sm text-anthracite list-disc pl-5">
+                            ${lesson.details.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-fondSubtil border-l-4 border-accentOr">
+                        <span class="text-xs font-bold text-grisMoyen uppercase block mb-1">Exemple en contexte</span>
+                        <p class="text-anthracite text-base">${lesson.example}</p>
+                    </div>
+
+                    <div class="pt-2 flex justify-end">
+                        <button onclick="askAIQuick('${lesson.aiPrompt.replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-xl bg-accentOr/20 hover:bg-accentOr text-anthracite font-semibold text-xs transition-colors flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            M'entraîner sur ce point avec l'IA
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Afficher la première leçon au chargement
+        showGrammarLesson('passe-compose');
+
+        // ----------------------------------------------------------------
+        // 4. EXERCICES PRATIQUES (RUBRIQUE 3)
+        // ----------------------------------------------------------------
+        function checkExercise1() {
+            const q1 = document.getElementById('ex1-q1').value;
+            const q2 = document.getElementById('ex1-q2').value;
+            const q3 = document.getElementById('ex1-q3').value;
+            const q4 = document.getElementById('ex1-q4').value;
+
+            const feedback = document.getElementById('ex1-feedback');
+            feedback.classList.remove('hidden', 'bg-green-50', 'text-green-900', 'border-green-200', 'bg-amber-50', 'text-amber-900', 'border-amber-200');
+
+            if (!q1 || !q2 || !q3 || !q4) {
+                feedback.classList.add('bg-amber-50', 'text-amber-900', 'border', 'border-amber-200');
+                feedback.innerHTML = "⚠️ <strong>Attention :</strong> Complète les 4 trous avant de vérifier tes réponses !";
+                return;
+            }
+
+            let score = 0;
+            let hints = [];
+
+            if (q1 === 'suis allée') score++;
+            else hints.push("• <strong>Trou 1 :</strong> Le verbe <em>aller</em> utilise l'auxiliaire <strong>être</strong>, et Léa est une fille (accord féminin).");
+
+            if (q2 === 'avons regardé') score++;
+            else hints.push("• <strong>Trou 2 :</strong> Le verbe <em>regarder</em> utilise <strong>avoir</strong> (pas d'accord avec le sujet).");
+
+            if (q3 === 'a pris') score++;
+            else hints.push("• <strong>Trou 3 :</strong> Le participe passé de <em>prendre</em> est irrégulier : <strong>pris</strong>.");
+
+            if (q4 === 'sommes rentrés') score++;
+            else hints.push("• <strong>Trou 4 :</strong> <em>Rentrer</em> utilise <strong>être</strong>, et « nous » (Léa et Lucas) est pluriel.");
+
+            if (score === 4) {
+                feedback.classList.add('bg-green-50', 'text-green-900', 'border', 'border-green-200');
+                feedback.innerHTML = "🎉 <strong>Bravo ! 4/4 !</strong> Tu maîtrises très bien l'accord des auxiliaires être et avoir au passé composé.";
+            } else {
+                feedback.classList.add('bg-amber-50', 'text-amber-900', 'border', 'border-amber-200');
+                feedback.innerHTML = `<strong>Score : ${score}/4.</strong> Voici quelques indices pour corriger tes erreurs :<br><div class="mt-2 space-y-1">${hints.join('<br>')}</div>`;
+            }
+        }
+
+        function resetExercise1() {
+            ['ex1-q1', 'ex1-q2', 'ex1-q3', 'ex1-q4'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('ex1-feedback').classList.add('hidden');
+        }
+
+        function submitWritingToAI() {
+            const text = document.getElementById('student-writing').value.trim();
+            if (!text) {
+                askAIQuick("Je veux écrire un petit texte sur mon week-end au passé composé, peux-tu me donner 3 verbes utiles pour commencer ?");
+                return;
+            }
+            const prompt = `Voici mon petit texte niveau A2 : "${text}". Peux-tu m'encourager et me donner un indice s'il y a une petite erreur, sans tout réécrire à ma place ?`;
+            askAIQuick(prompt);
+        }
+
+        // ----------------------------------------------------------------
+        // 5. QUIZ INTERACTIF (RUBRIQUE 4)
+        // ----------------------------------------------------------------
+        const quizQuestions = [
+            {
+                q: "1. Tu veux acheter un billet de train à la gare. Que dis-tu au guichet ?",
+                options: [
+                    "Je voudrais un aller-retour pour Lyon, s'il vous plaît.",
+                    "Où est la piscine municipale ?",
+                    "J'ai mangé un sandwich au fromage."
+                ],
+                correct: 0,
+                explanation: "« Je voudrais un aller-retour... » est la formule polie et exacte pour acheter un billet."
+            },
+            {
+                q: "2. Complète la phrase : « Hier soir, mes amis ______ venus chez moi. »",
+                options: ["ont", "sont", "sommes"],
+                correct: 1,
+                explanation: "Le verbe « venir » se conjugue avec l'auxiliaire ÊTRE au passé composé (ils sont venus)."
+            },
+            {
+                q: "3. Quel mot correspond à : « Le tableau des heures de cours au lycée » ?",
+                options: ["Un bagage", "Un emploi du temps", "Un quai"],
+                correct: 1,
+                explanation: "L'emploi du temps indique les horaires et les matières de la semaine."
+            },
+            {
+                q: "4. Remplace le mot souligné : « Tu regardes <u>la télé</u> ? — Oui, je ______ regarde. »",
+                options: ["le", "les", "la"],
+                correct: 2,
+                explanation: "« La télé » est féminin singulier, on utilise donc le pronom COD « la »."
+            },
+            {
+                q: "5. Comment dit-on qu'on a une bonne relation avec un ami ?",
+                options: [
+                    "Je m'entends bien avec lui.",
+                    "Je me trompe avec lui.",
+                    "Je me dépêche avec lui."
+                ],
+                correct: 0,
+                explanation: "« S'entendre bien avec quelqu'un » signifie avoir une bonne relation amicale."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        function renderQuizQuestion() {
+            quizAnswered = false;
+            const item = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-progress-text').textContent = `Question ${currentQuizIndex + 1} sur ${quizQuestions.length}`;
+            document.getElementById('quiz-score-badge').textContent = `Score : ${quizScore}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQuizIndex + 1) / quizQuestions.length) * 100}%`;
+
+            document.getElementById('quiz-question').textContent = item.q;
+            document.getElementById('quiz-explanation').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            item.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn w-full text-left p-4 rounded-xl border border-grisClair hover:border-anthracite bg-blancPur text-anthracite text-sm font-medium transition-all flex items-center justify-between";
+                btn.innerHTML = `<span>${opt}</span>`;
+                btn.onclick = () => selectQuizOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectQuizOption(selectedIndex, btnElement) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+
+            const item = quizQuestions[currentQuizIndex];
+            const allBtns = document.querySelectorAll('.quiz-opt-btn');
+
+            allBtns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === item.correct) {
+                    b.classList.remove('border-grisClair', 'bg-blancPur');
+                    b.classList.add('border-green-500', 'bg-green-50', 'text-green-900');
+                    b.innerHTML += `<span class="text-xs font-bold text-green-700">✓ Correct</span>`;
+                } else if (idx === selectedIndex && selectedIndex !== item.correct) {
+                    b.classList.remove('border-grisClair', 'bg-blancPur');
+                    b.classList.add('border-red-400', 'bg-red-50', 'text-red-900');
+                    b.innerHTML += `<span class="text-xs font-bold text-red-700">✕ Erreur</span>`;
+                }
+            });
+
+            if (selectedIndex === item.correct) {
+                quizScore++;
+                document.getElementById('quiz-score-badge').textContent = `Score : ${quizScore}`;
+            }
+
+            const expBox = document.getElementById('quiz-explanation');
+            document.getElementById('quiz-explanation-text').innerHTML = `<strong>Explication :</strong> ${item.explanation}`;
+            expBox.classList.remove('hidden');
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.textContent = currentQuizIndex === quizQuestions.length - 1 ? "Voir mon résultat final" : "Question suivante →";
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                renderQuizQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-question-area').classList.add('hidden');
+            document.getElementById('quiz-explanation').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            const resultArea = document.getElementById('quiz-result-area');
+            resultArea.classList.remove('hidden');
+            document.getElementById('quiz-final-score').textContent = `Ton score final : ${quizScore} / ${quizQuestions.length}`;
+
+            let msg = "";
+            if (quizScore === 5) msg = "Excellent travail ! Tu maîtrises parfaitement ces notions du niveau A2.";
+            else if (quizScore >= 3) msg = "Bien joué ! Tu as de bonnes bases. Continue à pratiquer avec l'Assistant IA.";
+            else msg = "C'est un bon début ! Relis les fiches de grammaire et demande des indices à l'IA pour progresser.";
+            document.getElementById('quiz-final-message').textContent = msg;
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quiz-result-area').classList.add('hidden');
+            document.getElementById('quiz-question-area').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        // Initialiser le quiz
+        renderQuizQuestion();
+
+        // ----------------------------------------------------------------
+        // 6. AGENT IA PÉDAGOGIQUE (INTÉGRATION GEMINI API)
+        // ----------------------------------------------------------------
+        const apiKey = ""; // Laisser vide : fourni automatiquement à l'exécution ou configurable
+        let chatHistory = [];
+
+        // Instructions système strictes selon le projet pédagogique de l'enseignant
+        const systemInstructionText = `Tu es l'assistant pédagogique virtuel du site « Cours de FLE ».
+Ton public : des apprenants adolescents âgés de 15 à 17 ans, de niveau A2 en Français Langue Étrangère (FLE).
+Tes règles pédagogiques strictes :
+1. Utilise un français simple, clair, chaleureux et adapté au niveau A2 (phrases courtes, vocabulaire accessible).
+2. Ne donne JAMAIS la réponse complète directement lorsqu'un élève fait un exercice ou pose une question de grammaire/vocabulaire : donne d'abord un INDICE pédagogique ou pose une petite question pour le guider vers la solution.
+3. Encourage toujours l'élève à réfléchir et à progresser de manière autonome, avec bienveillance.
+4. Tu connais le contenu du site : Vocabulaires (Loisirs, Voyages, Vie au lycée), Point grammatical (Passé composé, Imparfait, Pronoms COD), Pratiquer et Quiz.
+5. Si l'élève le demande, propose des mini-exercices interactifs courts (1 ou 2 questions à la fois) adaptés aux ados de 15-17 ans.`;
+
+        function toggleChat(forceState) {
+            const win = document.getElementById('ai-chat-window');
+            if (typeof forceState === 'boolean') {
+                if (forceState) win.classList.remove('hidden');
+                else win.classList.add('hidden');
+            } else {
+                win.classList.toggle('hidden');
+            }
+            if (!win.classList.contains('hidden')) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        function askAIQuick(promptText) {
+            toggleChat(true);
+            sendMessageToAI(promptText);
+        }
+
+        function handleChatSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            sendMessageToAI(text);
+        }
+
+        function appendChatMessage(sender, text) {
+            const container = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+
+            // Formatage basique du gras (**texte**) et retours à la ligne
+            const formattedText = text
+                .replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+
+            if (sender === 'user') {
+                wrapper.className = "flex justify-end";
+                wrapper.innerHTML = `
+                    <div class="bg-anthracite text-blancPur rounded-2xl rounded-tr-none px-4 py-2.5 text-sm max-w-[82%] shadow-sm">
+                        ${formattedText}
+                    </div>
+                `;
+            } else {
+                wrapper.className = "flex items-start gap-2.5";
+                wrapper.innerHTML = `
+                    <div class="w-7 h-7 rounded-lg bg-anthracite text-accentOr flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                        IA
+                    </div>
+                    <div class="bg-blancPur border border-grisClair rounded-2xl rounded-tl-none px-4 py-3 text-sm text-anthracite max-w-[85%] shadow-sm leading-relaxed">
+                        ${formattedText}
+                    </div>
+                `;
+            }
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.id = 'ai-typing-indicator';
+            div.className = "flex items-start gap-2.5";
+            div.innerHTML = `
+                <div class="w-7 h-7 rounded-lg bg-anthracite text-accentOr flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">IA</div>
+                <div class="bg-blancPur border border-grisClair rounded-2xl rounded-tl-none px-4 py-3.5 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-accentOr typing-dot"></span>
+                    <span class="w-2 h-2 rounded-full bg-accentOr typing-dot"></span>
+                    <span class="w-2 h-2 rounded-full bg-accentOr typing-dot"></span>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('ai-typing-indicator');
+            if (el) el.remove();
+        }
+
+        // Fonction d'appel API avec Backoff Exponentiel
+        async function fetchGeminiWithRetry(payload, retries = 3, delay = 1000) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return await response.json();
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
+                }
+            }
+        }
+
+        async function sendMessageToAI(userText) {
+            appendChatMessage('user', userText);
+            chatHistory.push({ role: "user", parts: [{ text: userText }] });
+            showTypingIndicator();
+
+            const payload = {
+                contents: chatHistory,
+                systemInstruction: {
+                    parts: [{ text: systemInstructionText }]
+                }
+            };
+
+            try {
+                const result = await fetchGeminiWithRetry(payload);
+                removeTypingIndicator();
+                const reply = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (reply) {
+                    chatHistory.push({ role: "model", parts: [{ text: reply }] });
+                    appendChatMessage('ai', reply);
+                } else {
+                    appendChatMessage('ai', "Hmm, je n'ai pas bien compris. Peux-tu reformuler ta question avec des mots simples ?");
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                // Mode secours pédagogique local si hors-ligne ou sans clé API configurée sur GitHub Pages
+                const fallbackReply = getLocalPedagogicalFallback(userText);
+                appendChatMessage('ai', fallbackReply);
+            }
+        }
+
+        // Réponse pédagogique de secours intelligente (garantit le fonctionnement même sans clé API externe)
+        function getLocalPedagogicalFallback(query) {
+            const q = query.toLowerCase();
+            if (q.includes('passé composé')) {
+                return "💡 **Petit indice :** Pour le passé composé, pense à deux morceaux : l'auxiliaire (**avoir** ou **être** au présent) + le participe passé. Exemple : *J'ai mangé*. Quel verbe veux-tu conjuguer ?";
+            }
+            if (q.includes('indice')) {
+                return "🔍 **Voici un indice :** Regarde bien le sujet de la phrase (est-ce masculin, féminin ou pluriel ?) et demande-toi si l'action est terminée dans le passé. Essaie de me proposer une réponse !";
+            }
+            if (q.includes('exercice')) {
+                return "✍️ **Mini-défi A2 :** Complète cette phrase avec *le*, *la* ou *les* :\n« Tu aimes la musique française ? — Oui, j'adore écouter ______ ! »\nÀ toi de jouer !";
+            }
+            return "👏 C'est une très bonne démarche ! Essaie de me dire ce que tu penses en premier avec des mots simples, et je te donnerai un indice pour t'aider à avancer.";
+        }
+    </script>
+</body>
+</html>
